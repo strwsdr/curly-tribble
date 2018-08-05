@@ -34,15 +34,18 @@ class First(unittest.TestCase):
         prices = []
         pages = driver.find_elements(By.CLASS_NAME, "page")
         for x in pages:
-            driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
-            try:
-                driver.execute_script(
-                    "window.oldjQuery=window.jQuery;delete window.jQuery;delete window.$;window.oSend=XMLHttpRequest.prototype.send;XMLHttpRequest.prototype.send = function(){console.log('stopped ajax request', arguments)};")
-                x.click()
+            if x.is_displayed():
+                driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
+                try:
+                    driver.execute_script("window.oldjQuery=window.jQuery;delete window.jQuery;delete window.$;window.oSend=XMLHttpRequest.prototype.send;XMLHttpRequest.prototype.send = function(){console.log('stopped ajax request', arguments)};")
+                    wait.until(EC.element_to_be_clickable)
+                    x.click()
+                    prices += driver.find_elements(By.CLASS_NAME, "final-price")
+                except EX.StaleElementReferenceException:
+                    elem = WebDriverWait(driver, 10).until(EC.visibility_of(x))
+                    elem.click()
+            else:
                 prices += driver.find_elements(By.CLASS_NAME, "final-price")
-            except EX.StaleElementReferenceException:
-                elem = WebDriverWait(driver, 10).until(EC.visibility_of(x))
-                elem.click()
             time.sleep(3)
         print(len(prices))
 
