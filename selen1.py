@@ -23,15 +23,17 @@ class Laredoute(unittest.TestCase):
             print("Pagename is correct!")
         except AssertionError:
             print("Pagename is incorrect!")
-        driver.find_element(By.XPATH, '//*[@id="mmFRv4divMain"]/div[3]/ul/li[3]/a').click()     #go to "men's clothes" category
-        men_cl_link = "https://www.laredoute.ru/men_style.aspx"                                 #check the corectness of button and link (try-except with assert method)
+        driver.find_element(By.XPATH,
+        '//*[@id="mmFRv4divMain"]/div[3]/ul/li[3]/a').click()     #go to "men's clothes" category
+        men_cl_link = "https://www.laredoute.ru/men_style.aspx"   #check the corectness of button and link (try-except with assert method)
         try:
             self.assertIn(men_cl_link, driver.current_url)
         except AssertionError:
             print("Wrong url is provided to men's clothes category!")
             driver.get(men_cl_link)
-        driver.find_element(By.XPATH, '//*[@id="ctl00_cphMain_ctl00_divInner982"]/div[2]/div/div[2]/div[1]/a[2]/img').click()   #go to "men's shirts" category
-        shirts_link = 'https://www.laredoute.ru/pplp/100/157938/244/cat-271.aspx'                                               #check the corectness of button and link (try-except with assert method)
+        driver.find_element(By.XPATH,
+        '//*[@id="ctl00_cphMain_ctl00_divInner982"]/div[2]/div/div[2]/div[1]/a[2]/img').click()   #go to "men's shirts" category
+        shirts_link = 'https://www.laredoute.ru/pplp/100/157938/244/cat-271.aspx'                 #check the corectness of button and link (try-except with assert method)
         try:
             self.assertIn(shirts_link, driver.current_url)
         except AssertionError:
@@ -43,7 +45,10 @@ class Laredoute(unittest.TestCase):
             if x.is_displayed():  #if there is more than one page here
                 driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
                 try:
-                    driver.execute_script("window.oldjQuery=window.jQuery;delete window.jQuery;delete window.$;window.oSend=XMLHttpRequest.prototype.send;XMLHttpRequest.prototype.send = function(){console.log('stopped ajax request', arguments)};")
+                    driver.execute_script("window.oldjQuery=window.jQuery;delete"
+                     +"window.jQuery;delete window.$;window.oSend=XMLHttpRequest.prototype.send;"
+                     +"XMLHttpRequest.prototype.send = function()"+
+                     "{console.log('stopped ajax request', arguments)};") #stop repeating AJAX requests
                     wait.until(EC.element_to_be_clickable)   #handle AJAX elements
                     x.click()
                     prices += driver.find_elements(By.CLASS_NAME, "final-price")
@@ -52,11 +57,14 @@ class Laredoute(unittest.TestCase):
                     elem.click()
             else:                #if there only one page here
                 prices += driver.find_elements(By.CLASS_NAME, "final-price")
-        count_title = driver.find_element(By.XPATH, '//*[@id="plpFRdivMain"]/div[1]/div[4]/div[2]/span[1]') #find the product counter on the page
+        count_title = driver.find_element(By.XPATH,
+        '//*[@id="plpFRdivMain"]/div[1]/div[4]/div[2]/span[1]') #find the product counter on the page
         if str(len(prices)) == count_title.text:  #if numbers is the same, the counter works correctly
-            print("All is ok, the number of products on the page corresponds to the counter!")
+            print("All is ok, the number of products on the page corresponds"
+             +"to the counter!")
         else:
-            print("There are differences in the quantity of goods and the counter number!")
+            print("There are differences in the quantity of goods and" +
+             "the counter number!")
 
     def tearDown(self):
         self.driver.close()
